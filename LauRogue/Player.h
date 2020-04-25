@@ -21,7 +21,7 @@ private:
 
 public:
 	Player();
-	Player(int n);
+	Player(const int& health, const int& fortitude, const int& strength, const int& dexterity, const int& speed, const int& luck);
 	void update();
 	int getHealth();
 	int getMaxHealth();

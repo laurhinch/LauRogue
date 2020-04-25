@@ -10,7 +10,7 @@ Player::Player() {
 	cout << "";
 };
 
-Player::Player(int n) {
+Player::Player(const int& health, const int& fortitude, const int& strength, const int& dexterity, const int& speed, const int& luck) {
 	this->health = health;
 	this->fortitude = fortitude;
 	this->strength = strength;

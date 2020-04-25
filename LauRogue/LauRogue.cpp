@@ -7,17 +7,30 @@
 #include "Player.h"
 #include "RNG.h"
 
+#define STARTINGPOINTS 14
+
 using std::cout;
 using std::cin;
 using std::string;
 
 Player player;
 
+//helper functions
 int clamp(const int& val, const int& lo, const int& hi)
 {
     return min(max(val, lo), hi);
 }
 
+string selectedItem(string val, bool isSelected) {
+    if (isSelected) {
+        return "[" + val + "]";
+    }
+    else {
+        return " " + val + " ";
+    }
+}
+
+//input functions
 char getKey()
 {
     DWORD        mode;
@@ -41,6 +54,7 @@ char getKey()
     return result;
 }
 
+//game processes
 int mainMenu() {
     string sMenu[4] = { "NEW GAME", "LOAD SAVE", "OPTIONS", "EXIT GAME" };
     char key_press;
@@ -84,6 +98,203 @@ int mainMenu() {
     }
 }
 
+void newGame() {
+    char key;
+    int pointsUsed = 0;
+    int pointsLeft = STARTINGPOINTS;
+    int fortitude = 1, strength = 1, dexterity = 1, speed = 1, luck = 1;
+    bool cursor[6][2];
+    int curX = 1;
+    int curY = 0;
+    while (1) {
+        int health = fortitude * 40;
+        int damage = dexterity * strength;
+        system("cls");
+        //build menu elements
+        cout << "LauRogue Character Creator\t" << "[" << std::to_string(pointsUsed) << " out of " << STARTINGPOINTS << "]\n" << std::endl;
+        for (int i = 0; i < 6; i++) {
+            cursor[i][0] = false;
+            cursor[i][1] = false;
+        }
+        cursor[curY][curX] = true;
+        cout << "\tFortitude\t[" << std::to_string(fortitude) << "/10]\t" << selectedItem("-", cursor[0][0]) << "|" << selectedItem("+", cursor[0][1]) << std::endl;
+        cout << "\tStrength\t[" << std::to_string(strength) << "/10]\t" << selectedItem("-", cursor[1][0]) << "|" << selectedItem("+", cursor[1][1]) << std::endl;
+        cout << "\tDexterity\t[" << std::to_string(dexterity) << "/10]\t" << selectedItem("-", cursor[2][0]) << "|" << selectedItem("+", cursor[2][1]) << std::endl;
+        cout << "\tSpeed\t\t[" << std::to_string(speed) << "/10]\t" << selectedItem("-", cursor[3][0]) << "|" << selectedItem("+", cursor[3][1]) << std::endl;
+        cout << "\tLuck\t\t[" << std::to_string(luck) << "/10]\t" << selectedItem("-", cursor[4][0]) << "|" << selectedItem("+", cursor[4][1]) << std::endl;
+        cout << std::endl;
+        cout << "(Max Health: " << std::to_string(health) << ")\t(Damage: " << std::to_string(damage) << ")" << std::endl;
+        cout << std::endl;
+        cout << "\t" << selectedItem("RESET STATS", cursor[5][0]) << "\t" << selectedItem("FINALIZE", cursor[5][1]) << std::endl;
+        key = getKey();
+        switch (key) {
+        case 'w':
+            curY--;
+            break;
+        case 's':
+            curY++;
+            break;
+        case 'a':
+            curX--;
+            break;
+        case 'd':
+            curX++;
+            break;
+        case 'z':
+            //reset or finalize
+            if (curY == 5) {
+                switch (curX) {
+                    //reset
+                case 0:
+                    fortitude = 1;
+                    strength = 1;
+                    dexterity = 1;
+                    speed = 1;
+                    luck = 1;
+                    pointsUsed = 0;
+                    pointsLeft = STARTINGPOINTS;
+                    break;
+                case 1:
+                    if (pointsUsed <= STARTINGPOINTS) {
+                        player = Player(health, fortitude, strength, dexterity, speed, luck);
+                    }
+                    else {
+                        cout << "Too many points allocated!" << std::endl;
+                        getKey();
+                    }
+                    break;
+                }
+            }
+            //if not = 5, must not be bottom row
+            else {
+                //increment
+                if (curX == 1) {
+                    switch (curY) {
+                        //fortitude
+                    case 0:
+                        fortitude++;
+                        pointsUsed++;
+                        if (fortitude > 10) {
+                            fortitude = 10;
+                            pointsUsed--;
+                        }
+                        break;
+                        //strength
+                    case 1:
+                        strength++;
+                        pointsUsed++;
+                        if (strength > 10) {
+                            strength = 10;
+                            pointsUsed--;
+                        }
+                        break;
+                        //dexterity
+                    case 2:
+                        dexterity++;
+                        pointsUsed++;
+                        if (dexterity > 10) {
+                            dexterity = 10;
+                            pointsUsed--;
+                        }
+                        break;
+                        //speed
+                    case 3:
+                        speed++;
+                        pointsUsed++;
+                        if (speed > 10) {
+                            speed = 10;
+                            pointsUsed--;
+                        }
+                        break;
+                        //luck
+                    case 4:
+                        luck++;
+                        pointsUsed++;
+                        if (luck > 10) {
+                            luck = 10;
+                            pointsUsed--;
+                        }
+                        break;
+                    }
+                }
+                //decrement
+                else {
+                    switch (curY) {
+                        //fortitude
+                    case 0:
+                        fortitude--;
+                        pointsUsed--;
+                        if (fortitude < 1) {
+                            fortitude = 1;
+                            pointsUsed++;
+                        }
+                        break;
+                        //strength
+                    case 1:
+                        strength--;
+                        pointsUsed--;
+                        if (strength < 1) {
+                            strength = 1;
+                            pointsUsed++;
+                        }
+                        break;
+                        //dexterity
+                    case 2:
+                        dexterity--;
+                        pointsUsed--;
+                        if (dexterity < 1) {
+                            dexterity = 1;
+                            pointsUsed++;
+                        }
+                        break;
+                        //speed
+                    case 3:
+                        speed--;
+                        pointsUsed--;
+                        if (speed < 1) {
+                            speed = 1;
+                            pointsUsed++;
+                        }
+                        break;
+                        //luck
+                    case 4:
+                        luck--;
+                        pointsUsed--;
+                        if (luck < 1) {
+                            luck = 1;
+                            pointsUsed++;
+                        }
+                        break;
+                    }
+                }
+                
+            }
+            break;
+        }
+        curY = clamp(curY, 0, 5);
+        curX = clamp(curX, 0, 1);
+        pointsLeft = STARTINGPOINTS - pointsUsed;
+    }
+}
+
+void loadGame() {
+    char key;
+    while (1) {
+        system("cls");
+        key = getKey();
+
+    }
+}
+
+void optionsMenu() {
+    char key;
+    while (1) {
+        system("cls");
+        key = getKey();
+
+    }
+}
+
 int main()
 {
     //initialize important objects
@@ -102,15 +313,15 @@ int main()
     switch (index) {
         case 0:
             //new player menu
-            player = Player();
+            newGame();
             break;
         case 1:
             //load player menu
-            player = Player(1);
+            loadGame();
             break;
         case 2:
             //options menu
-
+            optionsMenu();
             break;
         case 3:
             //exit game

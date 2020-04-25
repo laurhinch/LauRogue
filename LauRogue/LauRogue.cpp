@@ -30,7 +30,7 @@ char getKey()
     do ReadConsoleInput(hstdin, &inrec, 1, &count);
     while ((inrec.EventType != KEY_EVENT) || inrec.Event.KeyEvent.bKeyDown);
     SetConsoleMode(hstdin, mode);
-
+    
     return result;
 }
 

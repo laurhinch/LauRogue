@@ -11,6 +11,13 @@ using std::cout;
 using std::cin;
 using std::string;
 
+Player player;
+
+int clamp(const int& val, const int& lo, const int& hi)
+{
+    return min(max(val, lo), hi);
+}
+
 char getKey()
 {
     DWORD        mode;
@@ -34,16 +41,7 @@ char getKey()
     return result;
 }
 
-int main()
-{
-    RNG rand = *new RNG(1);
-    HANDLE hstdin;
-    DWORD mode;
-
-    hstdin = GetStdHandle(STD_INPUT_HANDLE);
-    GetConsoleMode(hstdin, &mode);
-    SetConsoleMode(hstdin, ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
-
+int mainMenu() {
     string sMenu[4] = { "NEW GAME", "LOAD SAVE", "OPTIONS", "EXIT GAME" };
     char key_press;
     int index = 0;
@@ -67,7 +65,8 @@ int main()
             }
         }
 
-        cout << "\n\n\tPress \'z\' key to select.\n";
+        cout << "\n\n\tPress \'w\' or \'s\' keys to change selection." << std::endl;
+        cout << "\tPress \'z\' key to select.\n";
 
         key_press = getKey();
         switch (key_press) {
@@ -78,30 +77,48 @@ int main()
             index++;
             break;
         case 'z':
-            index = index < 0 ? 0 : index;
-            index = index > 3 ? 3 : index;
+            index = clamp(index, 0, 3);
             return index;
         }
-        index = index < 0 ? 0 : index;
-        index = index > 3 ? 3 : index;
-
+        index = clamp(index, 0, 3);
     }
+}
+
+int main()
+{
+    //initialize important objects
+    RNG rand = *new RNG(1);
+    HANDLE hstdin;
+    DWORD mode;
+
+    //configure input buffer
+    hstdin = GetStdHandle(STD_INPUT_HANDLE);
+    GetConsoleMode(hstdin, &mode);
+    SetConsoleMode(hstdin, ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+
+    //get main menu interaction
+    int index = mainMenu();
 
     switch (index) {
-    case 0:
+        case 0:
+            //new player menu
+            player = Player();
+            break;
+        case 1:
+            //load player menu
+            player = Player(1);
+            break;
+        case 2:
+            //options menu
 
-        break;
-    case 1:
-
-        break;
-    case 2:
-
-        break;
-    case 3:
-        return 0;
+            break;
+        case 3:
+            //exit game
+            return 0;
     }
-    
-    SetConsoleMode(hstdin, mode);
 
+
+
+    SetConsoleMode(hstdin, mode);
     return 0;
 }

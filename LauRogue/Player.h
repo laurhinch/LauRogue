@@ -21,7 +21,7 @@ private:
 
 public:
 	Player();
-	Player(int health, int fortitude, int strength, int dexterity, int speed, int luck);
+	Player(int n);
 	void update();
 	int getHealth();
 	int getMaxHealth();

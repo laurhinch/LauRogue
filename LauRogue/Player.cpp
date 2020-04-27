@@ -61,10 +61,10 @@ void Player::setLuck(int& n) {
 int Player::getX() { return x; };
 int Player::getY() { return y; };
 
-void Player::setX(int& n) {
+void Player::setX(const int& n) {
 	x = n;
 };
 
-void Player::setY(int& n) {
+void Player::setY(const int& n) {
 	y = n;
 };

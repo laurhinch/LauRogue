@@ -7,13 +7,17 @@
 #include "Player.h"
 #include "RNG.h"
 
+Player player;
+
+#include "Map.h"
+
 #define STARTINGPOINTS 14
 
 using std::cout;
 using std::cin;
 using std::string;
 
-Player player;
+Map map;
 
 //helper functions
 int clamp(const int& val, const int& lo, const int& hi)
@@ -55,6 +59,54 @@ char getKey()
 }
 
 //game processes
+
+/*
+    updateGame()
+
+    Performs all main functions associated with gameplay including updating the screen and calculating game events.
+    Returns -1 if game is lost.
+    Returns 0 if game is won.
+    Returns a seed if game is neither won nor lost but rather saved and exited.
+*/
+int updateGame() {
+    char key;
+    while (1) {
+        system("cls");
+        //check if player is dead
+        if (player.getHealth() <= 0) {
+            return -1; // death code
+        }
+        //draw HUD elements
+
+
+        //draw map
+        map.player = player;
+        map.drawMap();
+
+
+        //handle input
+        key = getKey();
+        switch (key) {
+        case 'w':
+            player.setY(player.getY() - 1);
+            break;
+        case 's':
+            player.setY(player.getY() + 1);
+            break;
+        case 'a':
+            player.setX(player.getX() - 1);
+            break;
+        case 'd':
+            player.setX(player.getX() + 1);
+            break;
+        }
+    }
+}
+
+void updateGameScreen() {
+
+}
+
 int mainMenu() {
     string sMenu[4] = { "NEW GAME", "LOAD SAVE", "OPTIONS", "EXIT GAME" };
     char key_press;
@@ -98,7 +150,7 @@ int mainMenu() {
     }
 }
 
-void newGame() {
+Player newGame() {
     char key;
     int pointsUsed = 0;
     int pointsLeft = STARTINGPOINTS;
@@ -156,7 +208,7 @@ void newGame() {
                     break;
                 case 1:
                     if (pointsUsed <= STARTINGPOINTS) {
-                        player = Player(health, fortitude, strength, dexterity, speed, luck);
+                        return Player(health, fortitude, strength, dexterity, speed, luck);
                     }
                     else {
                         cout << "Too many points allocated!" << std::endl;
@@ -313,7 +365,9 @@ int main()
     switch (index) {
         case 0:
             //new player menu
-            newGame();
+            player = newGame();
+            map = Map(player);
+            updateGame();
             break;
         case 1:
             //load player menu

@@ -40,8 +40,7 @@ public:
 
 	int getX();
 	int getY();
-	void setX(int &n);
-	void setY(int &n);
-
+	void setX(const int &n);
+	void setY(const int &n);
 };
 

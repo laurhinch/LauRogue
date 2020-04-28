@@ -4,9 +4,9 @@
 #include <string>
 #include "Player.h"
 
-#define WIDTH 40
+#define WIDTH 48
 #define HEIGHT 24
-#define VIEWRADIUS 6
+#define VIEWRADIUS 5
 
 class Map
 {
@@ -20,14 +20,14 @@ public:
 private:
 
 public:
-	void setSeed(const int& seed);
-	int getSeed();
+	//void setSeed(const int& seed);
+	//int getSeed();
 
 	Map();
 	Map(Player pl);
 	void updateVisibleTiles();
 	char getCharAt(const int& y, const int& x);
-	std::string drawLine(const int& y);
+	//std::string drawLine(const int& y);
 	void drawMap();
 };
 

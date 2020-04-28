@@ -20,6 +20,17 @@ using std::string;
 Map map;
 
 //helper functions
+//fontSize() sets fontsize in console to a ratio of a:b
+void fontSize(int a, int b) {
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+    PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
+    lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    GetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+    lpConsoleCurrentFontEx->dwFontSize.X = a;
+    lpConsoleCurrentFontEx->dwFontSize.Y = b;
+    SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+}
+
 int clamp(const int& val, const int& lo, const int& hi)
 {
     return min(max(val, lo), hi);
@@ -131,7 +142,7 @@ int mainMenu() {
             }
         }
 
-        cout << "\n\n\tPress \'w\' or \'s\' keys to change selection." << std::endl;
+        cout << "\n\n\tPress \'w\' or \'s\' keys to change selection." << "\n";
         cout << "\tPress \'z\' key to select.\n";
 
         key_press = getKey();
@@ -163,21 +174,21 @@ Player newGame() {
         int damage = dexterity * strength;
         system("cls");
         //build menu elements
-        cout << "LauRogue Character Creator\t" << "[" << std::to_string(pointsUsed) << " out of " << STARTINGPOINTS << "]\n" << std::endl;
+        cout << "LauRogue Character Creator\t" << "[" << std::to_string(pointsUsed) << " out of " << STARTINGPOINTS << "]\n" << "\n";
         for (int i = 0; i < 6; i++) {
             cursor[i][0] = false;
             cursor[i][1] = false;
         }
         cursor[curY][curX] = true;
-        cout << "\tFortitude\t[" << std::to_string(fortitude) << "/10]\t" << selectedItem("-", cursor[0][0]) << "|" << selectedItem("+", cursor[0][1]) << std::endl;
-        cout << "\tStrength\t[" << std::to_string(strength) << "/10]\t" << selectedItem("-", cursor[1][0]) << "|" << selectedItem("+", cursor[1][1]) << std::endl;
-        cout << "\tDexterity\t[" << std::to_string(dexterity) << "/10]\t" << selectedItem("-", cursor[2][0]) << "|" << selectedItem("+", cursor[2][1]) << std::endl;
-        cout << "\tSpeed\t\t[" << std::to_string(speed) << "/10]\t" << selectedItem("-", cursor[3][0]) << "|" << selectedItem("+", cursor[3][1]) << std::endl;
-        cout << "\tLuck\t\t[" << std::to_string(luck) << "/10]\t" << selectedItem("-", cursor[4][0]) << "|" << selectedItem("+", cursor[4][1]) << std::endl;
-        cout << std::endl;
-        cout << "(Max Health: " << std::to_string(health) << ")\t(Damage: " << std::to_string(damage) << ")" << std::endl;
-        cout << std::endl;
-        cout << "\t" << selectedItem("RESET STATS", cursor[5][0]) << "\t" << selectedItem("FINALIZE", cursor[5][1]) << std::endl;
+        cout << "\tFortitude\t[" << std::to_string(fortitude) << "/10]\t" << selectedItem("-", cursor[0][0]) << "|" << selectedItem("+", cursor[0][1]) << "\n";
+        cout << "\tStrength\t[" << std::to_string(strength) << "/10]\t" << selectedItem("-", cursor[1][0]) << "|" << selectedItem("+", cursor[1][1]) << "\n";
+        cout << "\tDexterity\t[" << std::to_string(dexterity) << "/10]\t" << selectedItem("-", cursor[2][0]) << "|" << selectedItem("+", cursor[2][1]) << "\n";
+        cout << "\tSpeed\t\t[" << std::to_string(speed) << "/10]\t" << selectedItem("-", cursor[3][0]) << "|" << selectedItem("+", cursor[3][1]) << "\n";
+        cout << "\tLuck\t\t[" << std::to_string(luck) << "/10]\t" << selectedItem("-", cursor[4][0]) << "|" << selectedItem("+", cursor[4][1]) << "\n";
+        cout << "\n";
+        cout << "(Max Health: " << std::to_string(health) << ")\t(Damage: " << std::to_string(damage) << ")" << "\n";
+        cout << "\n";
+        cout << "\t" << selectedItem("RESET STATS", cursor[5][0]) << "\t" << selectedItem("FINALIZE", cursor[5][1]) << "\n";
         key = getKey();
         switch (key) {
         case 'w':
@@ -211,7 +222,7 @@ Player newGame() {
                         return Player(health, fortitude, strength, dexterity, speed, luck);
                     }
                     else {
-                        cout << "Too many points allocated!" << std::endl;
+                        cout << "Too many points allocated!" << "\n";
                         getKey();
                     }
                     break;
@@ -334,6 +345,7 @@ void loadGame() {
     while (1) {
         system("cls");
         key = getKey();
+        break;
 
     }
 }
@@ -343,21 +355,30 @@ void optionsMenu() {
     while (1) {
         system("cls");
         key = getKey();
+        break;
 
     }
 }
 
 int main()
 {
+    //increase speed of cin/cout streams
+    std::ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
     //initialize important objects
     RNG rand = *new RNG(1);
     HANDLE hstdin;
     DWORD mode;
+    CONSOLE_CURSOR_INFO cursorInfo;
 
     //configure input buffer
     hstdin = GetStdHandle(STD_INPUT_HANDLE);
     GetConsoleMode(hstdin, &mode);
     SetConsoleMode(hstdin, ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+    GetConsoleCursorInfo(hstdin, &cursorInfo);
+    cursorInfo.bVisible = false;
+    SetConsoleCursorInfo(hstdin, &cursorInfo);
+    fontSize(24, 32);
 
     //get main menu interaction
     int index = mainMenu();

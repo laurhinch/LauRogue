@@ -10,3 +10,5 @@ FEATURES:
 - Player class that can store position and move.
 - Character creator system.
 - RNG system that can incorporate player's luck stat in making decisions.
+
+This project is unfinished and will most likely never be worked on again.
